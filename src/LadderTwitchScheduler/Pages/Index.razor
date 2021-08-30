@@ -1,0 +1,39 @@
+﻿@page "/"
+@using LadderTwitchScheduler.Clients.Twitch
+@inject NavigationManager NavigationManager
+@inject TwitchClient twitchClient
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@if (twitchClient.access_token == string.Empty)
+{
+    <p>Please <a href="https://id.twitch.tv/oauth2/authorize?client_id=k85ti06w0g9ckjnnmj11vofxrjioy9&redirect_uri=https://localhost:5001&response_type=token&scope=channel:manage:schedule">login</a></p>
+}
+else
+{
+    if (twitchClient.LoggedInUser != null)
+    {
+        <p>Welcome, @twitchClient.LoggedInUser.display_name</p>
+    }
+}
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        string url = NavigationManager.Uri;
+        string[] parameters = url.Replace(NavigationManager.BaseUri, "").Replace("#", "").Split('&');
+        
+        
+        foreach (string prm in parameters)
+        {
+            if (prm.IndexOf("access_token=") >= 0)
+            {
+                twitchClient.Login(prm.Replace("access_token=", ""));
+                twitchClient.LoggedInUser = await twitchClient.GetUserAsync();
+            }
+        }
+    }
+}
