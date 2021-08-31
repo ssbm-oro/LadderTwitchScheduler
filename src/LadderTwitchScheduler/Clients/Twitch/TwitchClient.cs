@@ -39,16 +39,6 @@ namespace LadderTwitchScheduler.Clients.Twitch
         {
             Users users = await client.GetFromJsonAsync<Users>($"{baseUrl}users");
 
-            /*HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"{baseUrl}users");
-
-            using (var res = await client.SendAsync(req))
-            {
-                if (res.IsSuccessStatusCode)
-                {
-                    users = await res.Content.ReadFromJsonAsync<Users>();
-                }
-            }*/
-
             if (users != null)
             {
                 return users.data[0];
